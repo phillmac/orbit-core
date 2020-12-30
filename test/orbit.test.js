@@ -27,15 +27,10 @@ describe('Orbit', () => {
   let orbit, orbit2
   const channel = 'orbit-tests'
 
-  before(done => {
+  before(async () => {
     rmrf.sync(baseDir)
-    ipfs = new IPFS(config.daemon1)
-    ipfs.on('error', console.log)
-    ipfs.on('ready', () => {
-      ipfs2 = new IPFS(config.daemon2)
-      ipfs2.on('error', console.log)
-      ipfs2.on('ready', () => done())
-    })
+    ipfs = await IPFS.create(config.daemon1)
+    ipfs2 = await IPFS.create(config.daemon2)
   })
 
   beforeEach(async () => {
@@ -593,22 +588,21 @@ describe('Orbit', () => {
     })
 
     it('returns the contents of a file', async () => {
-      const res = await orbit.getFile(hash)
+      const content = (await orbit._ipfs.dag.get(hash)).value.payload.value.content // wtf?
+      const source = await orbit.getFile(content)
       let data = ''
       let buffer = new Uint8Array(0)
-      res.on('error', () => {})
-      res.on('data', chunk => {
+      for await (const chunk of source) {
         const tmp = new Uint8Array(buffer.length + chunk.length)
         tmp.set(buffer)
         tmp.set(chunk, buffer.length)
         buffer = tmp
         console.log(buffer)
         data += chunk
-      })
-      res.on('end', () => {
-        const contents = fs.readFileSync(filePath)
-        expect(data).to.equal(contents.toString())
-      })
+      }
+
+      const contents = fs.readFileSync(filePath)
+      expect(data).to.equal(contents.toString())
     })
   })
 

@@ -178,7 +178,7 @@ class Orbit {
     async function _addToIpfsJs (data) {
       const result = await this._ipfs.add(Buffer.from(data))
       const isDirectory = false
-      const hash = result[0].hash
+      const hash = result.cid.toString()
       return { hash, isDirectory }
     }
 
@@ -186,8 +186,8 @@ class Orbit {
       const result = await this._ipfs.add({ path: filePath })
       // last added hash is the filename --> we added a directory
       // first added hash is the filename --> we added a file
-      const isDirectory = result[0].path.split('/').pop() !== filename
-      const hash = isDirectory ? result[result.length - 1].hash : result[0].hash
+      const isDirectory = result.path.split('/').pop() !== filename
+      const hash = result.cid.toString()
       return { hash, isDirectory }
     }
 
@@ -233,7 +233,7 @@ class Orbit {
   }
 
   getFile (hash) {
-    return this._ipfs.catReadableStream(hash)
+    return this._ipfs.cat(hash)
   }
 
   getDirectory (hash) {
