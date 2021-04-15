@@ -11,7 +11,7 @@
   ],
   "dependencies": {
     "logplease": "~1.2.15",
-    "orbit-db": "0.26.0"
+    "orbit-db": "0.26.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
@@ -32,7 +32,7 @@
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "ipfs": "^0.50.2",
+    "ipfs": "^0.52.0",
     "mocha": "^6.2.0",
     "p-each-series": "^1.0.0",
     "p-map": "^2.0.0",
